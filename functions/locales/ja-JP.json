@@ -1,0 +1,22 @@
+{
+  "transaction_check_complete": "良さそうに思えます！ \"配送先住所を得る\" と言ってみてください。",
+  "transaction_check_complete_failed": "トランザクションは失敗しました。",
+  "delivery_address": "注文をどこに配送するかを知るために",
+  "delivery_address_complete": "素晴らしい、あなたの住所を得ました！\"トランザクションを確認する\"と言ってみてください。",
+  "delivery_address_complete_failed": "配送先住所の取得に失敗しました。",
+  "order.cart.merchant.name": "書店",
+  "order.cart.lineItems1.subLines.note": "作者からのノート",
+  "order.cart.lineItems2.subLines.note": "作者による特別な紹介",
+  "order.cart.lineItems4.subLines.note": "作者による特別な紹介",
+  "order.cart.notes": "Memoirのコレクション",
+  "order.cart.otherItems1.name": "小計",
+  "order.cart.otherItems2.name": "税",
+  "transaction_decision_complete.orderState.label": "注文が作成されました",
+  "transaction_decision_complete.orderManagementActions.button.title": "カスタマーサービス",
+  "transaction_decision_complete.userNotification.text": "通知テキスト.",
+  "transaction_decision_complete.userNotification.title": "通知タイトル.",
+  "transaction_decision_complete": "トランザクションが完了しました！全て準備されました！",
+  "transaction_decision_complete.addressOptions.reason": "注文をどこに配送するかを知るために",
+  "transaction_decision_complete_failed": "トランザクションは失敗しました。",
+  "order_delivered": "注文は配送されました！"
+}

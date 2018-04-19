@@ -16,6 +16,16 @@ const request = require('request');
 const {OrderUpdate} = require('actions-on-google');
 const key = require('./path/to/key.json');
 
+const i18n = require('i18n');
+i18n.configure({
+    locales: ['en-US', 'ja-JP'],
+    directory: __dirname + '/locales',
+    defaultLocale: 'en-US'
+});
+
+const locale = process.argv[2] || 'en-US';
+i18n.setLocale(locale);
+
 let jwtClient = new google.auth.JWT(
   key.client_email,
   null,
@@ -41,7 +51,7 @@ jwtClient.authorize((err, tokens) => {
   let orderUpdate = new OrderUpdate({
     actionOrderId: actionOrderId,
     orderState: {
-      label: 'Order has been delivered!',
+      label: i18n.__('order_delivered'),
       state: 'FULFILLED',
     },
     updateTime: currentTime,
