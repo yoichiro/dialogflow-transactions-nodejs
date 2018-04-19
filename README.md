@@ -20,7 +20,7 @@ Googleにより提供される決済のための機能も提供しています�
 1. *Save* をクリックして、プロジェクトを保存します。
 1. ギアアイコンをクリックして、プロジェクト設定を表示します。
 1. *Export and Import* を選択します。
-1. *Restore from zip* を選択します。このリポジトリにある Transactions.zip からリストアするための指示に従います。
+1. *Restore from zip* を選択します。このリポジトリにある Transactions-ja.zip からリストアするための指示に従います。
 1. [Google Cloud Functions for Firebase](https://firebase.google.com/docs/functions/) を使って、functions フォルダ内で提供されるフルフィルメントWebhookをデプロイします。
    1. [set up and initialize Firebase SDK for Cloud Functions](https://firebase.google.com/docs/functions/get-started#set_up_and_initialize_functions_sdk) の指示に従います。前の手順で Actions on Google Console で作成したプロジェクトを選択することを確認し、そして Firebase CLI にて既存ファイルの上書きを尋ねられた際には `N` と返事してください。
    1. `firebase deploy --only functions` を実行します。そして、フルフィルメントWebhookが公開されたエンドポイントをメモしておきます。それは、 `Function URL (transactions): https://${REGION}-${PROJECT}.cloudfunctions.net/transactions` のように表示されるはずです。
