@@ -49,10 +49,6 @@ app.intent('transaction_check_nopayment', handleConversation((conv) => {
   conv.ask(new TransactionRequirements());
 }));
 
-app.intent('transaction_check_nopayment', handleConversation((conv) => {
-  conv.ask(new TransactionRequirements());
-}));
-
 app.intent('transaction_check_action', handleConversation((conv) => {
   conv.ask(new TransactionRequirements({
     orderOptions: {
