@@ -14,6 +14,7 @@
 'use strict';
 
 process.env.DEBUG = 'actions-on-google:*';
+
 const {
   dialogflow,
   DeliveryAddress,
@@ -21,19 +22,38 @@ const {
   TransactionDecision,
   TransactionRequirements,
 } = require('actions-on-google');
+
 const functions = require('firebase-functions');
 
 const app = dialogflow({debug: true});
+
+const i18n = require('i18n');
+i18n.configure({
+  locales: ['en-US', 'ja-JP'],
+  directory: __dirname + '/locales',
+  defaultLocale: 'en-US'
+});
 
 const GENERIC_EXTENSION_TYPE =
   'type.googleapis.com/google.actions.v2.orders.GenericExtension';
 const UNIQUE_ORDER_ID = '<UNIQUE_ORDER_ID>';
 
-app.intent('transaction_check_nopayment', (conv) => {
-  conv.ask(new TransactionRequirements());
-});
+const handleConversation = (callback) => {
+  return (conv) => {
+    i18n.setLocale(conv.user.locale);
+    callback(conv);
+  };
+};
 
-app.intent('transaction_check_action', (conv) => {
+app.intent('transaction_check_nopayment', handleConversation((conv) => {
+  conv.ask(new TransactionRequirements());
+}));
+
+app.intent('transaction_check_nopayment', handleConversation((conv) => {
+  conv.ask(new TransactionRequirements());
+}));
+
+app.intent('transaction_check_action', handleConversation((conv) => {
   conv.ask(new TransactionRequirements({
     orderOptions: {
       requestDeliveryAddress: false,
@@ -45,9 +65,9 @@ app.intent('transaction_check_action', (conv) => {
       },
     },
   }));
-});
+}));
 
-app.intent('transaction_check_google', (conv) => {
+app.intent('transaction_check_google', handleConversation((conv) => {
   conv.ask(new TransactionRequirements({
     orderOptions: {
       requestDeliveryAddress: false,
@@ -62,46 +82,45 @@ app.intent('transaction_check_google', (conv) => {
       },
     },
   }));
-});
+}));
 
-app.intent('transaction_check_complete', (conv) => {
+app.intent('transaction_check_complete', handleConversation((conv) => {
   const arg = conv.arguments.get('TRANSACTION_REQUIREMENTS_CHECK_RESULT');
   if (arg && arg.resultType ==='OK') {
     // Normally take the user through cart building flow
-    conv.ask(`Looks like you're good to go! ` +
-      `Try saying "Get Delivery Address".`);
+    conv.ask(i18n.__('transaction_check_complete'));
   } else {
-    conv.close('Transaction failed.');
+    conv.close(i18n.__('transaction_check_complete_failed'));
   }
-});
+}));
 
-app.intent('delivery_address', (conv) => {
+app.intent('delivery_address', handleConversation((conv) => {
   conv.ask(new DeliveryAddress({
     addressOptions: {
-      reason: 'To know where to send the order',
+      reason: i18n.__('delivery_address'),
     },
   }));
-});
+}));
 
-app.intent('delivery_address_complete', (conv) => {
+app.intent('delivery_address_complete', handleConversation((conv) => {
   const arg = conv.arguments.get('DELIVERY_ADDRESS_VALUE');
   if (arg.userDecision ==='ACCEPTED') {
     console.log('DELIVERY ADDRESS: ' +
     arg.location.postalAddress.addressLines[0]);
     conv.data.deliveryAddress = arg.location;
-    conv.ask('Great, got your address! Now say "confirm transaction".');
+    conv.ask(i18n.__('delivery_address_complete'));
   } else {
-    conv.close('I failed to get your delivery address.');
+    conv.close(i18n.__('delivery_address_complete_failed'));
   }
-});
+}));
 
-app.intent('transaction_decision_action', (conv) => {
+app.intent('transaction_decision_action', handleConversation((conv) => {
   const order = {
     id: UNIQUE_ORDER_ID,
     cart: {
       merchant: {
         id: 'book_store_1',
-        name: 'Book Store',
+        name: i18n.__('order.cart.merchant.name'),
       },
       lineItems: [
         {
@@ -118,7 +137,7 @@ app.intent('transaction_decision_action', (conv) => {
           quantity: 1,
           subLines: [
             {
-              note: 'Note from the author',
+              note: i18n.__('order.cart.lineItems1.subLines.note'),
             },
           ],
           type: 'REGULAR',
@@ -137,7 +156,7 @@ app.intent('transaction_decision_action', (conv) => {
           quantity: 1,
           subLines: [
             {
-              note: 'Special introduction by author',
+              note: i18n.__('order.cart.lineItems2.subLines.note'),
             },
           ],
           type: 'REGULAR',
@@ -188,16 +207,16 @@ app.intent('transaction_decision_action', (conv) => {
           quantity: 1,
           subLines: [
             {
-              note: 'Special introduction by author',
+              note: i18n.__('order.cart.lineItems4.subLines.note'),
             },
           ],
           type: 'REGULAR',
         },
       ],
-      notes: 'The Memoir collection',
+      notes: i18n.__('order.cart.notes'),
       otherItems: [
         {
-          name: 'Subtotal',
+          name: i18n.__('order.cart.otherItems1.name'),
           id: 'subtotal',
           price: {
             amount: {
@@ -210,7 +229,7 @@ app.intent('transaction_decision_action', (conv) => {
           type: 'SUBTOTAL',
         },
         {
-          name: 'Tax',
+          name: i18n.__('order.cart.otherItems2.name'),
           id: 'tax',
           price: {
             amount: {
@@ -283,9 +302,9 @@ app.intent('transaction_decision_action', (conv) => {
     proposedOrder: order,
   }));
   */
-});
+}));
 
-app.intent('transaction_decision_complete', (conv) => {
+app.intent('transaction_decision_complete', handleConversation((conv) => {
   console.log('Transaction decision complete');
   const arg = conv.arguments.get('TRANSACTION_DECISION_VALUE');
   if (arg && arg.userDecision ==='ORDER_ACCEPTED') {
@@ -297,7 +316,7 @@ app.intent('transaction_decision_complete', (conv) => {
     conv.ask(new OrderUpdate({
       actionOrderId: finalOrderId,
       orderState: {
-        label: 'Order created',
+        label: i18n.__('transaction_decision_complete.orderState.label'),
         state: 'CREATED',
       },
       lineItemUpdates: {},
@@ -312,26 +331,26 @@ app.intent('transaction_decision_complete', (conv) => {
             openUrlAction: {
               url: 'http://example.com/customer-service',
             },
-            title: 'Customer Service',
+            title: i18n.__('transaction_decision_complete.orderManagementActions.button.title'),
           },
           type: 'CUSTOMER_SERVICE',
         },
       ],
       userNotification: {
-        text: 'Notification text.',
-        title: 'Notification Title',
+        text: i18n.__('transaction_decision_complete.userNotification.text'),
+        title: i18n.__('transaction_decision_complete.userNotification.title'),
       },
     }));
-    conv.ask(`Transaction completed! You're all set!`);
+    conv.ask(i18n.__('transaction_decision_complete'));
   } else if (arg && arg.userDecision === 'DELIVERY_ADDRESS_UPDATED') {
     conv.ask(new DeliveryAddress({
       addressOptions: {
-        reason: 'To know where to send the order',
+        reason: i18n.__('transaction_decision_complete.addressOptions.reason'),
       },
     }));
   } else {
-    conv.close('Transaction failed.');
+    conv.close(i18n.__('transaction_decision_complete_failed'));
   }
-});
+}));
 
 exports.transactions = functions.https.onRequest(app);

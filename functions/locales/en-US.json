@@ -1,0 +1,22 @@
+{
+  "transaction_check_complete": "Looks like you're good to go! Try saying \"Get Delivery Address\".",
+  "transaction_check_complete_failed": "Transaction failed.",
+  "delivery_address": "To know where to send the order",
+  "delivery_address_complete": "Great, got your address! Now say \"confirm transaction\".",
+  "delivery_address_complete_failed": "I failed to get your delivery address.",
+  "order.cart.merchant.name": "Book Store",
+  "order.cart.lineItems1.subLines.note": "Note from the author",
+  "order.cart.lineItems2.subLines.note": "Special introduction by author",
+  "order.cart.lineItems4.subLines.note": "Special introduction by author",
+  "order.cart.notes": "The Memoir collection",
+  "order.cart.otherItems1.name": "Subtotal",
+  "order.cart.otherItems2.name": "Tax",
+  "transaction_decision_complete.orderState.label": "Order created",
+  "transaction_decision_complete.orderManagementActions.button.title": "Customer service",
+  "transaction_decision_complete.userNotification.text": "Notification text.",
+  "transaction_decision_complete.userNotification.title": "Notification Title.",
+  "transaction_decision_complete": "Transaction completed! You're all set!",
+  "transaction_decision_complete.addressOptions.reason": "To know where to send the order",
+  "transaction_decision_complete_failed": "Transaction failed.",
+  "order_delivered": "Order has been delivered!"
+}
